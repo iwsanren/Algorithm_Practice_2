@@ -70,13 +70,19 @@ public class SimpleMinPQ {
     }
 
     public void sink(int node){
-        // while the node still has child nodes
-        while(left(node) < size && right(node) < size){
+        // while the node still has at least one child nodes
+        while(left(node) < size || right(node) < size){
             int min = node;
-            if(heap[node] > heap[left(node)]){
+            // compare with min rather than node.
+            if(left(node) < size && heap[min] > heap[left(node)]){
+                // The check `left(node) < size` inside the `if` statement is necessary and not redundant,
+                // even though a similar condition appears in the `while` loop.
+                // The condition in the `while` loop only determines whether we should enter the loop,
+                // but the check inside the `if` ensures we don’t access an out-of-bounds index when comparing values.
+                // Without this check, we might access an invalid array index and cause an IndexOutOfBoundsException.
                 min = left(node);
             }
-            if(heap[node] > heap[right(node)]){
+            if(right(node) < size && heap[min] > heap[right(node)]){
                 min = right(node);
             }
             if(min == node){
@@ -90,7 +96,6 @@ public class SimpleMinPQ {
     public static void main(String[] args) {
         SimpleMinPQ pq = new SimpleMinPQ(5);
         pq.push(3);
-        System.out.println("the first element");
         pq.push(7);
         pq.push(2);
         pq.push(4);
